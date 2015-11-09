@@ -106,7 +106,7 @@ class Bootstrap
      */
     public function getCorePath()
     {
-        return $this->corePath;
+        return apply_filters('wpmvc_core_path', $this->corePath);
     }
 
     /**
@@ -130,7 +130,7 @@ class Bootstrap
      */
     public function getTemplatePath()
     {
-        return $this->templatePath;
+        return apply_filters('wpmvc_template_path', $this->templatePath);
     }
 
     /**
@@ -154,7 +154,7 @@ class Bootstrap
      */
     public function getTemplateDir()
     {
-        return $this->templateDir;
+        return apply_filters('wpmvc_template_dir', $this->templateDir);
     }
 
     /**
@@ -178,7 +178,7 @@ class Bootstrap
      */
     public function getTemplateUrl()
     {
-        return $this->templateUrl;
+        return apply_filters('wpmvc_template_url', $this->templateUrl);
     }
 
     /**
@@ -205,10 +205,12 @@ class Bootstrap
      */
     public function init()
     {
+        $coreViewPath = apply_filters('wpmvc_core_views_path', $this->getCorePath() . '/Views/');
+        $appViewPath = apply_filters('wpmvc_app_views_path', $this->getTemplatePath() . '/app/views/');
         // Create a new view and set the default path as the current path
-        $theHeader = new View($this->getCorePath() . '/core/Views/');
-        $theBody = new View($this->getCorePath() . '/app/views/');
-        $theFooter = new View($this->getCorePath() . '/core/Views/');
+        $theHeader = new View($coreViewPath);
+        $theBody = new View($appViewPath);
+        $theFooter = new View($coreViewPath);
 
         // Set the header view
         $theHeader->setFile('header');
