@@ -1,0 +1,13 @@
+{
+    "name": "wpmvc-core",
+    "description": "WPMVC Core",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:vutran/wpmvc-core.git"
+    },
+    "autoload": {
+        "psr-4": {
+            "WPMVC\\": "src/"
+        }
+    }
+}
