@@ -65,17 +65,22 @@ class Bootstrap
             ->setTemplateUrl($options['templateUrl']);
 
         // Auto-load hook files
-        $hooks = glob($this->getTemplatePath() . '/app/hooks/*');
-        if ($hooks && count($hooks)) {
-            foreach ($hooks as $hook) {
-                if (file_exists($hook) && is_file($hook)) {
-                    require_once($hook);
-                }
-            }
-        }
+        $this->autoloadPath(apply_filters('wpmvc_app_hooks_path', $this->getTemplatePath() . '/app/hooks/*'));
 
         // Auto-load included files
-        $incs = glob($this->getTemplatePath() . '/app/inc/*');
+        $this->autoloadPath(apply_filters('wpmvc_app_inc_path', $this->getTemplatePath() . '/app/inc/*'));
+    }
+
+    /**
+     * Autoloads all files in the given path
+     *
+     * @access public
+     * @param string $path
+     * @return void
+     */
+    public function autoloadPath($path)
+    {
+        $incs = glob($path);
         if ($incs && count($incs)) {
             foreach ($incs as $inc) {
                 if (file_exists($inc) && is_file($inc)) {

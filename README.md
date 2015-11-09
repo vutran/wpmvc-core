@@ -12,4 +12,6 @@
 | `wpmvc_core_path` | | The full path to the wpmvc core directory |
 | `wpmvc_core_views_path` | | The path to the core's Views folder |
 | `wpmvc_app_views_path` | | The path to the application's Views folder |
+| `wpmvc_app_inc_path` | | The path to the application's inc folder |
+| `wpmvc_app_hooks_path` | | The path to the application's hooks folder |
 | `wpmvc_body_file` | | The name of the body file|
