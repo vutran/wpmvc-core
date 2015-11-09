@@ -3,7 +3,6 @@
 namespace WPMVC\Models;
 
 use \WPMVC\Common\Model;
-use \Minify_HTML;
 
 /**
  * The View Model
@@ -200,10 +199,9 @@ class View extends Model
      * Retrieve's the view output
      *
      * @access public
-     * @param int $minify                 (default: false) Set to true to minify
      * @return string
      */
-    public function output($minify = false)
+    public function output()
     {
         // If the view file exists
         if ($this->hasFile()) {
@@ -212,7 +210,6 @@ class View extends Model
             ob_start();
             include($this->getPath() . '/' . $this->getFile(true));
             $html = ob_get_contents();
-            if ($minify) { $html = Minify_HTML::minify($html); }
             ob_end_clean();
             return $html;
         } else {
