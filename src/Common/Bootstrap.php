@@ -11,6 +11,14 @@ use WPMVC\Models\View;
 class Bootstrap
 {
     /**
+     * The full server path to the wpmvc core directory
+     *
+     * @access protected
+     * @var string
+     */
+    protected $corePath;
+
+    /**
      * The full server path to the template directory
      *
      * @access protected
@@ -51,6 +59,7 @@ class Bootstrap
         ];
         $options = array_merge($defaults, $options);
         $this
+            ->setCorePath(dirname(__DIR__))
             ->setTemplatePath($options['templatePath'])
             ->setTemplateDir($options['templateDir'])
             ->setTemplateUrl($options['templateUrl']);
@@ -74,6 +83,30 @@ class Bootstrap
                 }
             }
         }
+    }
+
+    /**
+     * Sets the core path
+     *
+     * @access public
+     * @param string $path
+     * @return self
+     */
+    public function setCorePath($path)
+    {
+        $this->corePath = $path;
+        return $this;
+    }
+
+    /**
+     * Gets the core path
+     *
+     * @access public
+     * @return string
+     */
+    public function getCorePath()
+    {
+        return $this->corePath;
     }
 
     /**
@@ -173,9 +206,9 @@ class Bootstrap
     public function init()
     {
         // Create a new view and set the default path as the current path
-        $theHeader = new View($this->getTemplatePath() . '/core/Views/');
-        $theBody = new View($this->getTemplatePath() . '/app/views/');
-        $theFooter = new View($this->getTemplatePath() . '/core/Views/');
+        $theHeader = new View($this->getCorePath() . '/core/Views/');
+        $theBody = new View($this->getCorePath() . '/app/views/');
+        $theFooter = new View($this->getCorePath() . '/core/Views/');
 
         // Set the header view
         $theHeader->setFile('header');
