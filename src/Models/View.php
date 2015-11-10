@@ -15,7 +15,7 @@ class View extends Model
      * @access private
      * @var string
      */
-    private $_path = '';
+    private $path = '';
 
     /**
      * The path to the file relative to the view's path
@@ -23,13 +23,13 @@ class View extends Model
      * @access private
      * @var string
      */
-    private $_file = '';
+    private $file = '';
 
     /**
      * @access private
      * @var array
      */
-    private $_vars = array();
+    private $vars = array();
 
     /**
      * Creates a new view
@@ -53,7 +53,7 @@ class View extends Model
      */
     public function setPath($path)
     {
-        $this->_path = $path;
+        $this->path = $path;
         return $this;
     }
 
@@ -65,7 +65,7 @@ class View extends Model
      */
     public function getPath()
     {
-        return rtrim($this->_path, '/');
+        return rtrim($this->path, '/');
     }
 
     /**
@@ -88,7 +88,7 @@ class View extends Model
      */
     public function setFile($file)
     {
-        $this->_file = $file;
+        $this->file = $file;
         return $this;
     }
 
@@ -102,7 +102,7 @@ class View extends Model
     public function getFile($includeExtension = false)
     {
         $ext = $includeExtension ? '.php' : '';
-        return sprintf('%s%s', $this->_file, $ext);
+        return sprintf('%s%s', $this->file, $ext);
     }
 
     /**
@@ -132,7 +132,7 @@ class View extends Model
      */
     public function getVars()
     {
-        return $this->_vars;
+        return $this->vars;
     }
 
     /**
@@ -146,7 +146,7 @@ class View extends Model
     public function setVar($key, $value)
     {
         // Store into the vars array
-        $this->_vars[$key] = $value;
+        $this->vars[$key] = $value;
         return $this;
     }
 
@@ -159,7 +159,7 @@ class View extends Model
      */
     public function getVar($key)
     {
-        return (array_key_exists($key, $this->_vars)) ? $this->_vars[$key] : null;
+        return (array_key_exists($key, $this->vars)) ? $this->vars[$key] : null;
     }
 
     /**
@@ -178,7 +178,7 @@ class View extends Model
                 $this->set($k, $v);
             }
         } else {
-            $this->_vars[$key] = $value;
+            $this->vars[$key] = $value;
         }
         return $this;
     }
@@ -192,7 +192,7 @@ class View extends Model
      */
     public function get($key)
     {
-        return array_key_exists($key, $this->_vars) ? $this->_vars[$key] : null;
+        return array_key_exists($key, $this->vars) ? $this->vars[$key] : null;
     }
 
     /**

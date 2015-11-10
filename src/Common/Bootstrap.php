@@ -65,10 +65,10 @@ class Bootstrap
             ->setTemplateUrl($options['templateUrl']);
 
         // Auto-load hook files
-        $this->autoloadPath(apply_filters('wpmvc_app_hooks_path', $this->getTemplatePath() . '/app/hooks/*'));
+        $this->autoloadPath($this->filter('wpmvc_app_hooks_path', $this->getTemplatePath() . '/app/hooks/*'));
 
         // Auto-load included files
-        $this->autoloadPath(apply_filters('wpmvc_app_inc_path', $this->getTemplatePath() . '/app/inc/*'));
+        $this->autoloadPath($this->filter('wpmvc_app_inc_path', $this->getTemplatePath() . '/app/inc/*'));
     }
 
     /**
@@ -80,14 +80,32 @@ class Bootstrap
      */
     public function autoloadPath($path)
     {
-        $incs = glob($path);
-        if ($incs && count($incs)) {
-            foreach ($incs as $inc) {
-                if (file_exists($inc) && is_file($inc)) {
-                    require_once($inc);
+        $files = glob($path);
+        if ($files && count($files)) {
+            foreach ($files as $file) {
+                if (file_exists($file) && is_file($file)) {
+                    require_once($file);
                 }
             }
         }
+    }
+
+    /**
+     * Route to the WordPress apply_filters() function if available
+     *
+     * If the function apply_filters() doesn't exist, return the original value
+     *
+     * @access protected
+     * @param string $filter
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function filter($filter, $value)
+    {
+        if (function_exists('apply_filters')) {
+            return apply_filters($filter, $value);
+        }
+        return $value;
     }
 
     /**
@@ -111,7 +129,7 @@ class Bootstrap
      */
     public function getCorePath()
     {
-        return apply_filters('wpmvc_core_path', $this->corePath);
+        return $this->filter('wpmvc_core_path', $this->corePath);
     }
 
     /**
@@ -135,7 +153,7 @@ class Bootstrap
      */
     public function getTemplatePath()
     {
-        return apply_filters('wpmvc_template_path', $this->templatePath);
+        return $this->filter('wpmvc_template_path', $this->templatePath);
     }
 
     /**
@@ -159,7 +177,7 @@ class Bootstrap
      */
     public function getTemplateDir()
     {
-        return apply_filters('wpmvc_template_dir', $this->templateDir);
+        return $this->filter('wpmvc_template_dir', $this->templateDir);
     }
 
     /**
@@ -183,7 +201,7 @@ class Bootstrap
      */
     public function getTemplateUrl()
     {
-        return apply_filters('wpmvc_template_url', $this->templateUrl);
+        return $this->filter('wpmvc_template_url', $this->templateUrl);
     }
 
     /**
@@ -210,8 +228,8 @@ class Bootstrap
      */
     public function init()
     {
-        $coreViewPath = apply_filters('wpmvc_core_views_path', $this->getCorePath() . '/Views/');
-        $appViewPath = apply_filters('wpmvc_app_views_path', $this->getTemplatePath() . '/app/views/');
+        $coreViewPath = $this->filter('wpmvc_core_views_path', $this->getCorePath() . '/Views/');
+        $appViewPath = $this->filter('wpmvc_app_views_path', $this->getTemplatePath() . '/app/views/');
         // Create a new view and set the default path as the current path
         $theHeader = new View($coreViewPath);
         $theBody = new View($appViewPath);
@@ -264,7 +282,7 @@ class Bootstrap
         }
 
         // Apply the body file filter
-        $theBody->setFile(apply_filters('wpmvc_body_file', $theBody->getFile()));
+        $theBody->setFile($this->filter('wpmvc_body_file', $theBody->getFile()));
 
         echo $theHeader->output();
         echo $theBody->output();
