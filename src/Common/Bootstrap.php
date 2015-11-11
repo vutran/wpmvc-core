@@ -48,7 +48,9 @@ class Bootstrap
      *
      * @access public
      * @param array $options
+     * @param string $options['templatePath'] (default: "")
      * @param string $options['templateDir'] (default: "")
+     * @param string $options['templateUrl'] (default: "")
      * @return void
      */
     public function __construct($options = array())
@@ -58,7 +60,7 @@ class Bootstrap
             'templateDir' => '',
             'templateUrl' => ''
         ];
-        $options = array_merge($defaults, $options);
+        $options = array_merge_recursive($defaults, $options);
         $this
             ->setCorePath(dirname(__DIR__))
             ->setTemplatePath($options['templatePath'])
