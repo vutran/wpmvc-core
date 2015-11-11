@@ -4,7 +4,7 @@ namespace WPMVC\Models;
 
 // Import namespaces
 use \WP_Query;
-use \WP;
+use \WPMVC\Helpers\WP;
 
 /**
  * A basic WordPress post model
@@ -111,13 +111,13 @@ class Post
         if (is_numeric($post)) {
             // Retrieve the transient
             $transientKey = sprintf('WPMVC\Models\Post(%d)', $post);
-            $storedData = get_transient($transientKey);
+            $storedData = WP::getTransient($transientKey);
             // If the transient doesn't yet exist, query for it!
             if ($storedData === false) {
                 // Retrieve the post object
                 $post = WP::getPost(intval($post));
                 // Store the transient
-                set_transient($transientKey, $post, $this->transientTimeout);
+                WP::setTransient($transientKey, $post, $this->transientTimeout);
             } else { $post = $storedData; }
         } elseif (is_array($post)) {
             // Convert array into object
@@ -155,10 +155,10 @@ class Post
     {
         // Retrieve the transient
         $transientKey = sprintf('WPMVC\Models\Post(%d)::loadMetaData', $this->id());
-        $metaData = get_transient($transientKey);
+        $metaData = WP::getTransient($transientKey);
         // If it doesn't exist
         if (!$metaData) {
-            $keys = get_post_custom($this->id());
+            $keys = WP::getPostCustom($this->id());
             $metaData = array();
             if ($keys && is_array($keys) && count($keys)) {
                 foreach ($keys as $key => $value) {
@@ -170,7 +170,7 @@ class Post
                     }
                 }
             }
-            set_transient($transientKey, $metaData, $this->transientTimeout);
+            WP::setTransient($transientKey, $metaData, $this->transientTimeout);
         }
         $this->metaData = $metaData;
     }
@@ -293,7 +293,7 @@ class Post
         setup_postdata($post);
         $content = get_the_content($moreLinkText, $stripTeaser);
         // Apply filter
-        $content = apply_filters('the_content', $content);
+        $content = WP::applyFilters('the_content', $content);
         $content = str_replace(']]>', ']]&gt;', $content);
         // Restore the post
         $post = $_p;
@@ -355,7 +355,7 @@ class Post
         $text = '';
         if ($this->id()) {
             $text = $this->post->post_content;
-            $text = apply_filters('the_content', $text);
+            $text = WP::applyFilters('the_content', $text);
             $text = str_replace('\]\]\>', ']]&gt;', $text);
             // Allow <a> and <p> as well as formatting and list items
             $text = strip_tags($text, '<a><p><i><em><strong><b><ul><ol><li>');
@@ -384,7 +384,7 @@ class Post
         if (!$this->terms) {
             // Retrieve the transient value
             $transientKey = sprintf('WPMVC\Models\Post::getTerms(%s)', $this->id(), $taxonomy);
-            $terms = get_transient($transientKey);
+            $terms = WP::getTransient($transientKey);
             // If the terms isn't found in the cache
             if (!$terms) {
                 // Query for the terms
@@ -395,7 +395,7 @@ class Post
                 // Retrieve and set the terms
                 $terms = wp_get_post_terms($this->id(), $taxonomy, $args);
                 // Store into the cache
-                set_transient($transientKey, $terms, $this->transientTimeout);
+                WP::setTransient($transientKey, $terms, $this->transientTimeout);
             }
             // Set the terms
             $this->terms[$taxonomy] = $terms;
@@ -591,7 +591,9 @@ class Post
     {
         global $wpdb;
         if ($this->has('ID')) {
-            if (!$post_types) return NULL;
+            if (!$post_types) {
+                return NULL;
+            }
             if (is_array($post_types)) {
                 $txt = '';
                 for ($i = 0; $i <= count($post_types) - 1; $i++){
@@ -609,17 +611,20 @@ class Post
             $adjacent = $direction == 'prev' ? 'previous' : 'next';
             $op = $direction == 'prev' ? '<' : '>';
             $order = $direction == 'prev' ? 'DESC' : 'ASC';
-            $join  = apply_filters( "get_{$adjacent}_post_join", $join, $in_same_cat, $excluded_categories );
-            $where = apply_filters( "get_{$adjacent}_post_where", $wpdb->prepare("WHERE p.post_date $op %s AND p.post_type IN({$post_types}) AND p.post_status = 'publish'", $current_post_date), $in_same_cat, $excluded_categories );
-            $sort  = apply_filters( "get_{$adjacent}_post_sort", "ORDER BY p.post_date $order LIMIT 1" );
+            $join  = WP::applyFilters( "get_{$adjacent}_post_join", $join, $in_same_cat, $excluded_categories );
+            $where = WP::applyFilters( "get_{$adjacent}_post_where", $wpdb->prepare("WHERE p.post_date $op %s AND p.post_type IN({$post_types}) AND p.post_status = 'publish'", $current_post_date), $in_same_cat, $excluded_categories );
+            $sort  = WP::applyFilters( "get_{$adjacent}_post_sort", "ORDER BY p.post_date $order LIMIT 1" );
             $query = "SELECT p.* FROM $wpdb->posts AS p $join $where $sort";
             $query_key = 'adjacent_post_' . md5($query);
             $result = wp_cache_get($query_key, 'counts');
-            if ( false !== $result ) { return $result; }
+            if ( false !== $result ) {
+                return $result;
+            }
             $esql = "SELECT p.* FROM $wpdb->posts AS p $join $where $sort";
             $result = $wpdb->get_row($esql);
-            if ( null === $result )
+            if ( null === $result ) {
                 $result = false;
+            }
             return $result;
         }
         return false;

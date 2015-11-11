@@ -3,8 +3,8 @@
 namespace WPMVC\Common;
 
 // Import namespaces
-use WPMVC\Helpers\WP;
-use WPMVC\Models\View;
+use \WPMVC\Helpers\WP;
+use \WPMVC\Models\View;
 
 /**
  * Core WPMVC Bootstrap
@@ -60,7 +60,7 @@ class Bootstrap
             'templateDir' => '',
             'templateUrl' => ''
         ];
-        $options = array_merge_recursive($defaults, $options);
+        $options = array_merge($defaults, $options);
         $this
             ->setCorePath(dirname(__DIR__))
             ->setTemplatePath($options['templatePath'])

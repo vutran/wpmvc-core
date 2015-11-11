@@ -197,7 +197,7 @@ class WP
      * @param mixed $value
      * @return bool
      */
-    public function isWpError($value)
+    public static function isWpError($value)
     {
         return is_wp_error($value);
     }
@@ -209,7 +209,7 @@ class WP
      * @param int $postId
      * @return bool|int
      */
-    public function mediaHandleUpload($fileKey, $postId)
+    public static function mediaHandleUpload($fileKey, $postId)
     {
         return media_handle_upload($fileKey, $postId);
     }
@@ -221,8 +221,43 @@ class WP
      * @param int $attachmentId
      * @return bool
      */
-    public function setPostThumbnail($postId, $attachmentId)
+    public static function setPostThumbnail($postId, $attachmentId)
     {
         return set_post_thumbnail($postId, $attachmentId);
+    }
+
+    /**
+     * @access public
+     * @static
+     * @param string $name
+     * @param mixed $value
+     * @param int $expires
+     * @return bool
+     */
+    public static function setTransient($name, $value, $expires)
+    {
+        return set_transient($name, $value, $expires);
+    }
+
+    /**
+     * @access public
+     * @static
+     * @param string $name
+     * @return mixed
+     */
+    public static function getTransient($name)
+    {
+        return get_transient($name);
+    }
+
+    /**
+     * @access public
+     * @static
+     * @param int $postId
+     * @return array
+     */
+    public static function getPostCustom($postId)
+    {
+        return get_post_custom($postId);
     }
 }

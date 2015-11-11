@@ -2,6 +2,7 @@
 
 namespace WPMVC\Models;
 
+// Import namespaces
 use \WPMVC\Common\Model;
 
 /**
