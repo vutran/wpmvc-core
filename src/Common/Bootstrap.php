@@ -3,6 +3,7 @@
 namespace WPMVC\Common;
 
 // Import namespaces
+use WPMVC\Helpers\WP;
 use WPMVC\Models\View;
 
 /**
@@ -64,11 +65,9 @@ class Bootstrap
             ->setTemplateDir($options['templateDir'])
             ->setTemplateUrl($options['templateUrl']);
 
-        // Auto-load hook files
-        $this->autoloadPath($this->filter('wpmvc_app_hooks_path', $this->getTemplatePath() . '/app/hooks/*'));
-
-        // Auto-load included files
-        $this->autoloadPath($this->filter('wpmvc_app_inc_path', $this->getTemplatePath() . '/app/inc/*'));
+        // Auto-load hooks/includeds
+        $this->autoloadPath(WP::applyFilters('wpmvc_app_hooks_path', $this->getTemplatePath() . '/app/hooks/*'));
+        $this->autoloadPath(WP::applyFilters('wpmvc_app_inc_path', $this->getTemplatePath() . '/app/inc/*'));
     }
 
     /**
@@ -88,24 +87,6 @@ class Bootstrap
                 }
             }
         }
-    }
-
-    /**
-     * Route to the WordPress apply_filters() function if available
-     *
-     * If the function apply_filters() doesn't exist, return the original value
-     *
-     * @access protected
-     * @param string $filter
-     * @param mixed $value
-     * @return mixed
-     */
-    protected function filter($filter, $value)
-    {
-        if (function_exists('apply_filters')) {
-            return apply_filters($filter, $value);
-        }
-        return $value;
     }
 
     /**
@@ -129,7 +110,7 @@ class Bootstrap
      */
     public function getCorePath()
     {
-        return $this->filter('wpmvc_core_path', $this->corePath);
+        return WP::applyFilters('wpmvc_core_path', $this->corePath);
     }
 
     /**
@@ -153,7 +134,7 @@ class Bootstrap
      */
     public function getTemplatePath()
     {
-        return $this->filter('wpmvc_template_path', $this->templatePath);
+        return WP::applyFilters('wpmvc_template_path', $this->templatePath);
     }
 
     /**
@@ -177,7 +158,7 @@ class Bootstrap
      */
     public function getTemplateDir()
     {
-        return $this->filter('wpmvc_template_dir', $this->templateDir);
+        return WP::applyFilters('wpmvc_template_dir', $this->templateDir);
     }
 
     /**
@@ -201,7 +182,7 @@ class Bootstrap
      */
     public function getTemplateUrl()
     {
-        return $this->filter('wpmvc_template_url', $this->templateUrl);
+        return WP::applyFilters('wpmvc_template_url', $this->templateUrl);
     }
 
     /**
@@ -228,8 +209,8 @@ class Bootstrap
      */
     public function init()
     {
-        $coreViewPath = $this->filter('wpmvc_core_views_path', $this->getCorePath() . '/Views/');
-        $appViewPath = $this->filter('wpmvc_app_views_path', $this->getTemplatePath() . '/app/views/');
+        $coreViewPath = WP::applyFilters('wpmvc_core_views_path', $this->getCorePath() . '/Views/');
+        $appViewPath = WP::applyFilters('wpmvc_app_views_path', $this->getTemplatePath() . '/app/views/');
         // Create a new view and set the default path as the current path
         $theHeader = new View($coreViewPath);
         $theBody = new View($appViewPath);
@@ -243,46 +224,45 @@ class Bootstrap
         $theFooter->setVar('app', $this);
 
         // If the front page is requested
-        if (is_front_page() || is_home()) {
+        if (WP::isFrontPage() || WP::isHome()) {
             $theBody->setFile('home');
             $theBody->setVar('app', $this);
         } else {
             // Retrieve the requested post type
-            $postType = get_query_var('post_type');
-            if (is_404()) {
+            $postType = WP::getQueryVar('post_type');
+            if (WP::is404()) {
                 // 404 view
                 $theBody->setFile('404');
-            } elseif (is_search()) {
+            } elseif (WP::isSearch()) {
                 // Search index
                 $theBody->setFile('search/index');
-            } elseif (is_tax()) {
+            } elseif (WP::isTax()) {
                 // Taxonomy archive
-                $taxonomy = get_query_var('taxonomy');
+                $taxonomy = WP::getQueryVar('taxonomy');
                 $theBody->setFile(sprintf('taxonomy/%s/index', $taxonomy));
-            } elseif (is_tag()) {
+            } elseif (WP::isTag()) {
                 // Tag archive
                 $theBody->setFile('tag/index');
-            } elseif (is_page()) {
-                global $pagename;
+            } elseif (WP::isPage()) {
                 // Page view
-                $theBody->setFile($pagename);
+                $theBody->setFile(WP::getCurrentPageName());
                 // If view file doesn't exist, fallback to the page.php view
                 if (!$theBody->hasFile()) {
                     $theBody->setFile('page');
                 }
-            } elseif (is_post_type_archive()) {
+            } elseif (WP::isPostTypeArchive()) {
                 // Post type archive
                 $theBody->setFile(sprintf('%s/index', $postType));
-            } elseif (is_single()) {
+            } elseif (WP::isSingle()) {
                 // Retrieve the current requested post type (applies to pages, and post single and archive views)
-                $postType = get_post_type();
+                $postType = WP::getPostType();
                 // Post permalink
                 $theBody->setFile(sprintf('%s/single', $postType));
             }
         }
 
         // Apply the body file filter
-        $theBody->setFile($this->filter('wpmvc_body_file', $theBody->getFile()));
+        $theBody->setFile(WP::applyFilters('wpmvc_body_file', $theBody->getFile()));
 
         echo $theHeader->output();
         echo $theBody->output();

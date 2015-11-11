@@ -4,6 +4,7 @@ namespace WPMVC\Common;
 
 // Import namespaces
 use \wpdb;
+use \WPMVC\Helpers\WP;
 
 /**
  * Abstract repository class
@@ -59,20 +60,20 @@ abstract class Repository
         // Set the post type
         $postData['post_type'] = $this->postType;
         // Insert the post and return the response
-        $newPostId = wp_insert_post($postData);
+        $newPostId = WP::wpInsertPost($postData);
         // If the new post was added successfully
-        if ($newPostId && !is_wp_error($newPostId)) {
+        if ($newPostId && !WP::isWpError($newPostId)) {
             // If the file is uploaded
             if (is_uploaded_file($_FILES[$fileKey]['tmp_name'])) {
                 require_once( ABSPATH . 'wp-admin/includes/image.php' );
                 require_once( ABSPATH . 'wp-admin/includes/file.php' );
                 require_once( ABSPATH . 'wp-admin/includes/media.php' );
                 // Upload the file
-                $attachmentId = media_handle_upload($fileKey, $newPostId);
+                $attachmentId = WP::mediaHandleUpload($fileKey, $newPostId);
                 // If the attachment is valid
-                if ($attachmentId && !is_wp_error($attachmentId)) {
+                if ($attachmentId && !WP::isWpError($attachmentId)) {
                     // Set the post thumbnail
-                    set_post_thumbnail($newPostId, $attachmentId);
+                    WP::setPostThumbnail($newPostId, $attachmentId);
                 }
             }
         }
@@ -90,7 +91,7 @@ abstract class Repository
         // Set the post ID
         $postData['ID'] = $postID;
         // Update the post
-        return wp_update_post($postData);
+        return WP::wpUpdatePost($postData);
     }
 
     /**
@@ -102,7 +103,7 @@ abstract class Repository
     public function delete($postId)
     {
         // Force delete the post
-        return wp_delete_post($postId, true);
+        return WP::deletePost($postId, true);
     }
 
     /**
@@ -113,11 +114,7 @@ abstract class Repository
      */
     public function updateMeta($postId, $key, $value)
     {
-        if (function_exists('update_field')) {
-            return update_field($key, $value, $postId);
-        } else {
-            return update_post_meta($postId, $key, $value);
-        }
+        return WP::updatePostMeta($postId, $key, $value);
     }
 
     /**
@@ -129,7 +126,7 @@ abstract class Repository
     public function findById($postId)
     {
         // Retrieve the post
-        $thePost = get_post($postId);
+        $thePost = WP::getPost($postId);
         // Return the wrapped instance
         return new $this->className($thePost);
     }

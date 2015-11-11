@@ -3,7 +3,8 @@
 namespace WPMVC\Models;
 
 // Import namespaces
-use WP_Query;
+use \WP_Query;
+use \WP;
 
 /**
  * A basic WordPress post model
@@ -93,7 +94,7 @@ class Post
      */
     public static function createById($postId)
     {
-        $post = get_post(intval($post));
+        $post = WP::getPost(intval($post));
         return new static($post);
     }
 
@@ -114,7 +115,7 @@ class Post
             // If the transient doesn't yet exist, query for it!
             if ($storedData === false) {
                 // Retrieve the post object
-                $post = get_post(intval($post));
+                $post = WP::getPost(intval($post));
                 // Store the transient
                 set_transient($transientKey, $post, $this->transientTimeout);
             } else { $post = $storedData; }
@@ -162,8 +163,11 @@ class Post
             if ($keys && is_array($keys) && count($keys)) {
                 foreach ($keys as $key => $value) {
                     // If only 1 value, it's a string
-                    if (is_array($value) && count($value) == 1) { $metaData[$key] = $value[0]; }
-                    else { $metaData[$key] = $value; }
+                    if (is_array($value) && count($value) == 1) {
+                        $metaData[$key] = $value[0];
+                    } else {
+                        $metaData[$key] = $value;
+                    }
                 }
             }
             set_transient($transientKey, $metaData, $this->transientTimeout);
@@ -353,13 +357,14 @@ class Post
             $text = $this->post->post_content;
             $text = apply_filters('the_content', $text);
             $text = str_replace('\]\]\>', ']]&gt;', $text);
-
             // Allow <a> and <p> as well as formatting and list items
             $text = strip_tags($text, '<a><p><i><em><strong><b><ul><ol><li>');
             $words_array = explode(' ', $text, $wordCount + 1);
             if (count($words_array) > $wordCount) {
                 array_pop($words_array);
-                if ($moreLinkText) array_push($words_array, '<br /><a href="'. $this->permalink() . '">read more</a>');
+                if ($moreLinkText) {
+                    array_push($words_array, '<br /><a href="'. $this->permalink() . '">read more</a>');
+                }
                 $words_array[0] = str_replace('<p>', '', $words_array[0]); // remove <p> tag at beginning
                 $text = implode(' ', $words_array);
             }
@@ -667,7 +672,7 @@ class Post
      * Retrieves the previous post slug
      *
      * @access public
-     * @return object
+     * @return string
      */
     public function getPrevSlug()
     {
@@ -678,7 +683,7 @@ class Post
      * Retrieves the next post slug
      *
      * @access public
-     * @return object
+     * @return string
      */
     public function getNextSlug()
     {
@@ -689,7 +694,7 @@ class Post
      * Retrieves the previous post title
      *
      * @access public
-     * @return object
+     * @return string
      */
     public function getPrevTitle()
     {
@@ -700,7 +705,7 @@ class Post
      * Retrieves the next post title
      *
      * @access public
-     * @return object
+     * @return string
      */
     public function getNextTitle()
     {
