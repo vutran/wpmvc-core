@@ -57,6 +57,16 @@ class WP
      * @static
      * @return bool
      */
+    public static function isPage()
+    {
+        return is_page();
+    }
+
+    /**
+     * @access public
+     * @static
+     * @return bool
+     */
     public static function isSearch()
     {
         return is_search();
