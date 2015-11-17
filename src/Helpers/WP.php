@@ -97,6 +97,16 @@ class WP
      * @static
      * @return bool
      */
+    public static function isCategory()
+    {
+        return is_category();
+    }
+
+    /**
+     * @access public
+     * @static
+     * @return bool
+     */
     public static function isPostTypeArchive()
     {
         return is_post_type_archive();
