@@ -15,9 +15,10 @@ class Post
      * The transient timeout
      *
      * @access protected
+     * @static
      * @var int
      */
-    protected $transientTimeout = 1;
+    protected static $transientTimeout = 1;
 
     /**
      * A WP_Post object instance
@@ -117,7 +118,7 @@ class Post
                 // Retrieve the post object
                 $post = WP::getPost(intval($post));
                 // Store the transient
-                WP::setTransient($transientKey, $post, $this->transientTimeout);
+                WP::setTransient($transientKey, $post, static::$transientTimeout);
             } else { $post = $storedData; }
         } elseif (is_array($post)) {
             // Convert array into object
@@ -170,7 +171,7 @@ class Post
                     }
                 }
             }
-            WP::setTransient($transientKey, $metaData, $this->transientTimeout);
+            WP::setTransient($transientKey, $metaData, static::$transientTimeout);
         }
         $this->metaData = $metaData;
     }
@@ -395,7 +396,7 @@ class Post
                 // Retrieve and set the terms
                 $terms = wp_get_post_terms($this->id(), $taxonomy, $args);
                 // Store into the cache
-                WP::setTransient($transientKey, $terms, $this->transientTimeout);
+                WP::setTransient($transientKey, $terms, static::$transientTimeout);
             }
             // Set the terms
             $this->terms[$taxonomy] = $terms;
