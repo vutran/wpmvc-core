@@ -84,6 +84,9 @@ class Bootstrap
         $files = glob($path);
         if ($files && count($files)) {
             foreach ($files as $file) {
+                if (file_exists($file) && is_dir($file)) {
+                    $this->autoloadPath($file . "/*");
+                }
                 if (file_exists($file) && is_file($file)) {
                     require_once($file);
                 }
