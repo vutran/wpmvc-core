@@ -14,7 +14,12 @@
 | `wpmvc_app_views_path` | | The path to the application's Views folder |
 | `wpmvc_app_inc_path` | | The path to the application's inc folder |
 | `wpmvc_app_hooks_path` | | The path to the application's hooks folder |
+| `wpmvc_header_file` | | The output of the header file |
+| `wpmvc_header_output` | | The output of the header file |
+| `wpmvc_footer_file` | | The output of the footer file |
+| `wpmvc_footer_output` | | The output of the footer file |
 | `wpmvc_body_file` | | The name of the body file |
+| `wpmvc_body_output` | | The output of the body file |
 
 ## Actions
 

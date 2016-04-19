@@ -222,10 +222,10 @@ class Bootstrap
         $theFooter = new View($coreViewPath);
 
         // Set the header view
-        $theHeader->setFile('header');
+        $theHeader->setFile(WP::applyFilters('wpmvc_header_file', 'header'));
         $theHeader->setVar('app', $this);
         // Set the footer view
-        $theFooter->setFile('footer');
+        $theFooter->setFile(WP::applyFilters('wpmvc_footer_file', 'footer'));
         $theFooter->setVar('app', $this);
 
         // If the front page is requested
@@ -272,8 +272,8 @@ class Bootstrap
         // Apply the body file filter
         $theBody->setFile(WP::applyFilters('wpmvc_body_file', $theBody->getFile()));
 
-        echo $theHeader->output();
-        echo $theBody->output();
-        echo $theFooter->output();
+        echo WP::applyFilters('wpmvc_header_output', $theHeader->output());
+        echo WP::applyFilters('wpmvc_body_output', $theBody->output());
+        echo WP::applyFilters('wpmvc_footer_output', $theFooter->output());
     }
 }
