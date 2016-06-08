@@ -280,4 +280,73 @@ class WP
     {
         return get_post_custom($postId);
     }
+
+    /**
+     * Scaffolds settings group, sections, and fields
+     *
+     * @link Section: https://codex.wordpress.org/Function_Reference/add_settings_section
+     * @link Field: https://codex.wordpress.org/Function_Reference/add_settings_field
+     *
+     * @access public
+     * @static
+     * @param string $groupName                             The name of the settings group
+     * @param array $options                                An array of settings sections to create in the settings group
+     * @param string $options[]['id']                       The id/name of the section
+     * @param string $options[]['title']                    The header line for the section
+     * @param string $options[]['callback']                 A callback function for the section
+     * @param string $options[]['page']                     The page slug where to display the section
+     * @param array $options[]['fields']                    An array of fields for the section
+     * @param array $options[]['fields'][]['id']            The field ID/name. This is also the wp_options key.
+     * @param string $options[]['fields'][]['title']        The title of the field.
+     * @param string $options[]['fields'][]['type']         HTML input type (enum: "text", "number", "password")
+     * @return void
+     */
+    public static function registerSettingsGroup($groupName, $options)
+    {
+        // iterate through all settings fields groups and build it
+        foreach ($options as $section) {
+            // first, create the section
+            add_settings_section($section['id'], $section['title'], $section['callback'], $section['page']);
+            // iterate through all fields in the section and add it
+            foreach ($section['fields'] as $field) {
+                // register the settings
+                register_setting($groupName, $field['id']);
+                // set the callback args
+                $args = array(
+                    'label_for' => $field['id'],
+                    'id' => $field['id'],
+                    'type' => $field['type'],
+                );
+                // add the settings field
+                add_settings_field($field['id'], $field['title'], function($args) {
+                    if (isset($args['type'])) {
+                        // set default field type if necessary
+                        switch ($args['type']) {
+                            case 'text':
+                                // no break
+                            case 'password':
+                                // no break
+                            case 'number':
+                                // let it pass...
+                                break;
+                            default:
+                                // fallback on text
+                                $args['type'] = 'text';
+                                break;
+                        }
+                    } else {
+                        // set the default type
+                        $args['type'] = 'text';
+                    }
+                    echo sprintf(
+                        '<input id="%s" type="%s" name="%s" value="%s" size="80" />',
+                        $args['id'],
+                        $args['type'],
+                        $args['id'],
+                        get_option($args['id'])
+                    );
+                }, $section['page'], $section['id'], $args);
+            }
+        }
+    }
 }
