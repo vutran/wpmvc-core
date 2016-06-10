@@ -320,6 +320,8 @@ class WP
                 // add the settings field
                 add_settings_field($field['id'], $field['title'], function($args) {
                     if (isset($args['type'])) {
+                        $value = get_option($args['id']);
+                        $extraParams = '';
                         // set default field type if necessary
                         switch ($args['type']) {
                             case 'text':
@@ -328,6 +330,11 @@ class WP
                                 // no break
                             case 'number':
                                 // let it pass...
+                                break;
+                            case 'checkbox':
+                                // let it pass...
+                                $extraParams = sprintf(' %s', $value ? 'checked="checked"' : '');
+                                $value = 1;
                                 break;
                             default:
                                 // fallback on text
@@ -339,11 +346,12 @@ class WP
                         $args['type'] = 'text';
                     }
                     echo sprintf(
-                        '<input id="%s" type="%s" name="%s" value="%s" size="80" />',
+                        '<input id="%s" type="%s" name="%s" value="%s" size="80" %s />',
                         $args['id'],
                         $args['type'],
                         $args['id'],
-                        get_option($args['id'])
+                        $value,
+                        $extraParams
                     );
                 }, $section['page'], $section['id'], $args);
             }
