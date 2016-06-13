@@ -27,3 +27,34 @@
 | :--- | :--- | :--- |
 | `wpmvc_theme_footer` | | Ran just before the `wp_footer()` |
 | `wpmvc_theme_header` | | Ran right after the opening `<body>` tag |
+
+# Docker
+
+## Install
+
+```bash
+$ docker-compose up install
+```
+
+## Update Composer and Packages
+
+```bash
+$ docker-compose up update
+```
+
+## PHP Code Sniffer
+
+```bash
+$ docker-compose up phpcs
+```
+
+## Validate PHP
+
+```bash
+# --rm          automatically remove the container on exit
+# -v            map volume host volume to container (host:container)
+# php:5.6       image name:tag
+# php           command to run in container
+# script.php    PHP script to run
+$ docker run --rm -v "$PWD":/app -w /app php:5.6 php /path/to/script.php
+```
