@@ -1,21 +1,24 @@
 {
-    "name": "vutran/wpmvc-core",
-    "description": "WPMVC Core",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-	    "name": "Vu Tran",
-	    "email": "vu@vu-tran.com",
-	    "homepage": "http://vu-tran.com"
-	}
-    ],
-    "support": {
-        "forum": "https://github.com/vutran/wpmvc-core/issues"
-    },
-    "autoload": {
-        "psr-4": {
-            "WPMVC\\": "src/"
-        }
+  "name": "vutran/wpmvc-core",
+  "description": "WPMVC Core",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Vu Tran",
+      "email": "vu@vu-tran.com",
+      "homepage": "http://vu-tran.com"
     }
+  ],
+  "support": {
+    "forum": "https://github.com/vutran/wpmvc-core/issues"
+  },
+  "autoload": {
+    "psr-4": {
+      "WPMVC\\": "src/"
+    }
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^2.5"
+  }
 }

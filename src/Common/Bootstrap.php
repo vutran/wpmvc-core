@@ -248,7 +248,7 @@ class Bootstrap
             } elseif (WP::isTag()) {
                 // Tag archive
                 $theBody->setFile('tag/index');
-            } elseif ( WP::isCategory()) {
+            } elseif (WP::isCategory()) {
                 // Category archive
                 $theBody->setFile('category/index');
             } elseif (WP::isPage()) {

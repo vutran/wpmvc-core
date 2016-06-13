@@ -116,7 +116,7 @@ class View extends Model
     public function setVars($vars)
     {
         // If vars is an array
-        if ( is_array($vars) && count($vars)) {
+        if (is_array($vars) && count($vars)) {
             // Iterate and set the var
             foreach ($vars as $key => $value) {
                 $this->setVar($key, $value);

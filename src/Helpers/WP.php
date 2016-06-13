@@ -318,7 +318,7 @@ class WP
                     'type' => $field['type'],
                 );
                 // add the settings field
-                add_settings_field($field['id'], $field['title'], function($args) {
+                add_settings_field($field['id'], $field['title'], function ($args) {
                     if (isset($args['type'])) {
                         $value = get_option($args['id']);
                         $extraParams = '';

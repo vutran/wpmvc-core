@@ -65,9 +65,9 @@ abstract class Repository
         if ($newPostId && !WP::isWpError($newPostId)) {
             // If the file is uploaded
             if (is_uploaded_file($_FILES[$fileKey]['tmp_name'])) {
-                require_once( ABSPATH . 'wp-admin/includes/image.php' );
-                require_once( ABSPATH . 'wp-admin/includes/file.php' );
-                require_once( ABSPATH . 'wp-admin/includes/media.php' );
+                require_once(ABSPATH . 'wp-admin/includes/image.php');
+                require_once(ABSPATH . 'wp-admin/includes/file.php');
+                require_once(ABSPATH . 'wp-admin/includes/media.php');
                 // Upload the file
                 $attachmentId = WP::mediaHandleUpload($fileKey, $newPostId);
                 // If the attachment is valid

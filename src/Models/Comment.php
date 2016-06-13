@@ -109,7 +109,7 @@ class Comment
      */
     public function authorName()
     {
-        $user = get_userdata( $this->comment->user_id );
+        $user = get_userdata($this->comment->user_id);
         return $user->display_name;
     }
 
@@ -250,7 +250,7 @@ class Comment
             $link = __('Edit This');
         }
         // Retrieve the comment link
-        $link = '<a class="comment-edit-link" href="' . get_edit_comment_link( $this->id() ) . '">' . $link . '</a>';
+        $link = '<a class="comment-edit-link" href="' . get_edit_comment_link($this->id()) . '">' . $link . '</a>';
         return $before . apply_filters('edit_comment_link', $link, $this->id()) . $after;
     }
 

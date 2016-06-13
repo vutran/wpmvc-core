@@ -1,0 +1,17 @@
+phpcs:
+  image: composer/composer
+  volumes:
+   - .:/app
+  entrypoint: ./scripts/phpcs.sh
+
+install:
+  image: composer/composer
+  volumes:
+   - .:/app
+  entrypoint: ./scripts/install.sh
+
+update:
+  image: composer/composer
+  volumes:
+   - .:/app
+  entrypoint: ./scripts/update.sh

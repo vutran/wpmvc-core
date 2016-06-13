@@ -119,7 +119,9 @@ class Post
                 $post = WP::getPost(intval($post));
                 // Store the transient
                 WP::setTransient($transientKey, $post, static::$transientTimeout);
-            } else { $post = $storedData; }
+            } else {
+                $post = $storedData;
+            }
         } elseif (is_array($post)) {
             // Convert array into object
             $post = (object) $post;
@@ -328,9 +330,12 @@ class Post
         $full_excerpt = get_the_excerpt();
         $full_excerpt_count = count(explode(' ', $full_excerpt)); /* Correct Word Count */
         $new_excerpt = explode(' ', $full_excerpt, $limit);
-        if ($full_excerpt_count <= $wordCount) { $delimiter = ''; }
-        else { array_pop($new_excerpt); }
-        $new_excerpt = implode(" ",$new_excerpt) . $delimiter;
+        if ($full_excerpt_count <= $wordCount) {
+            $delimiter = '';
+        } else {
+            array_pop($new_excerpt);
+        }
+        $new_excerpt = implode(' ', $new_excerpt) . $delimiter;
         // Restore the post
         $post = $_p;
         if ($_p) {
@@ -593,13 +598,15 @@ class Post
         global $wpdb;
         if ($this->has('ID')) {
             if (!$post_types) {
-                return NULL;
+                return null;
             }
             if (is_array($post_types)) {
                 $txt = '';
-                for ($i = 0; $i <= count($post_types) - 1; $i++){
+                for ($i = 0; $i <= count($post_types) - 1; $i++) {
                     $txt .= "'".$post_types[$i]."'";
-                    if ($i != count($post_types) - 1) $txt .= ', ';
+                    if ($i != count($post_types) - 1) {
+                        $txt .= ', ';
+                    }
                 }
                 $post_types = $txt;
             } else {
@@ -607,23 +614,23 @@ class Post
             }
             $current_post_date = $this->get('post_date');
             $join = '';
-            $in_same_cat = FALSE;
+            $in_same_cat = false;
             $excluded_categories = '';
             $adjacent = $direction == 'prev' ? 'previous' : 'next';
             $op = $direction == 'prev' ? '<' : '>';
             $order = $direction == 'prev' ? 'DESC' : 'ASC';
-            $join  = WP::applyFilters( "get_{$adjacent}_post_join", $join, $in_same_cat, $excluded_categories );
-            $where = WP::applyFilters( "get_{$adjacent}_post_where", $wpdb->prepare("WHERE p.post_date $op %s AND p.post_type IN({$post_types}) AND p.post_status = 'publish'", $current_post_date), $in_same_cat, $excluded_categories );
-            $sort  = WP::applyFilters( "get_{$adjacent}_post_sort", "ORDER BY p.post_date $order LIMIT 1" );
+            $join  = WP::applyFilters("get_{$adjacent}_post_join", $join, $in_same_cat, $excluded_categories);
+            $where = WP::applyFilters("get_{$adjacent}_post_where", $wpdb->prepare("WHERE p.post_date $op %s AND p.post_type IN({$post_types}) AND p.post_status = 'publish'", $current_post_date), $in_same_cat, $excluded_categories);
+            $sort  = WP::applyFilters("get_{$adjacent}_post_sort", "ORDER BY p.post_date $order LIMIT 1");
             $query = "SELECT p.* FROM $wpdb->posts AS p $join $where $sort";
             $query_key = 'adjacent_post_' . md5($query);
             $result = wp_cache_get($query_key, 'counts');
-            if ( false !== $result ) {
+            if (false !== $result) {
                 return $result;
             }
             $esql = "SELECT p.* FROM $wpdb->posts AS p $join $where $sort";
             $result = $wpdb->get_row($esql);
-            if ( null === $result ) {
+            if (null === $result) {
                 $result = false;
             }
             return $result;
