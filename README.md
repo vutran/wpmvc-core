@@ -2,6 +2,41 @@
 
 =====
 
+## Quick Start
+
+See below for a quick usage example. All files are relative to your theme directory.
+
+#### functions.php
+````php
+<?php
+
+// Instantiate the framework
+$app = new \WPMVC\Common\Bootstrap(array(
+    'templatePath' => TEMPLATEPATH,
+    'templateDir' => str_replace(WP_CONTENT_DIR, '', WP_CONTENT_URL . TEMPLATEPATH),
+    'templateUrl' => get_template_directory_uri()
+));
+
+// Create a view
+$myView = $app->createView('slug-a/slug-b');
+
+// set view variables
+$myView->set([
+  'foo' => 'Hello',
+  'bar' => 'World',
+]);
+````
+
+#### views/slug-a/slug-b.php
+
+````php
+<?php
+
+echo $foo . ' ' . $bar;
+
+// outputs "Hello World";
+````
+
 ## Filters
 
 | Name | Default Value | Description |
