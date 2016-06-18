@@ -25,6 +25,9 @@ $myView->set([
   'foo' => 'Hello',
   'bar' => 'World',
 ]);
+
+// prints the view
+echo $myView->output();
 ````
 
 #### views/slug-a/slug-b.php
