@@ -1,6 +1,6 @@
 # WPMVC Core
 
-=====
+> Simple framework for building WordPress themes/apps
 
 ## Quick Start
 
